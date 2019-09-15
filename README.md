@@ -8,7 +8,7 @@ This is a very lame readme explaining how to run the code that comes with this v
 You need to identify the zones first. To identify zones,
 1. First, run `python3.6 draw_zone.py -n <name_of_zone>` (replace _<name_of_zone>_ with a valid name i.e. _zoneq_).
 2. A wild GUI will appears. Left click and start drawing a polygon. Right click when you are finished.
-3. Repeat step _2_ for all the zones you want.
+3. Repeat step _1_ for all the zones you want.
 
 #### 2. Run the Sample OSC Server
 Run `python3.6 sample_osc_server.py`.
