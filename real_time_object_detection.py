@@ -9,8 +9,10 @@ import argparse
 import imutils
 import time
 import cv2
+import json
 from shapely.geometry import Polygon
 from shapely.geometry import box as sgbox
+from pythonosc import udp_client
 
 from get_polygons import get_polygons
 
@@ -23,6 +25,8 @@ ap.add_argument("-m", "--model", required=True,
 ap.add_argument("-c", "--confidence", type=float, default=0.2,
     help="minimum probability to filter weak detections")
 ap.add_argument("--zone_files_dir", default="zone_files", help="zone files directory")
+ap.add_argument("--ip", default="127.0.0.1", help="The ip of the OSC server")
+ap.add_argument("--port", type=int, default=5005, help="The port the OSC server is listening on")
 args = vars(ap.parse_args())
 
 # Get all the zones
@@ -49,6 +53,9 @@ vs = VideoStream(src=0).start()
 # vs = VideoStream(usePiCamera=True).start()
 time.sleep(2.0)
 fps = FPS().start()
+
+# Initilize OSC client
+client = udp_client.SimpleUDPClient(args['ip'], args['port'])
 
 # loop over the frames from the video stream
 while True:
@@ -108,12 +115,18 @@ while True:
     # print(boxes_person)
 
     # Calulate number of persons in each zone
+    zone_counts = {}
     for key in zones:
         person_count_in_zone = 0
         for bbox_person in boxes_person:
             if Polygon(zones[key]).intersects(Polygon(bbox_person)):
                 person_count_in_zone = person_count_in_zone + 1
         print('Person count in zone: {} = {}'.format(key, person_count_in_zone))
+        # Add this count is a dictionary
+        zone_counts[key] = person_count_in_zone
+
+    # Send the counts via osc
+    client.send_message("/count", json.dumps(zone_counts))
 
     # put the number of detected persons in the frame
     cv2.putText(
@@ -139,3 +152,4 @@ print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
 # do a bit of cleanup
 cv2.destroyAllWindows()
 vs.stop()
+
