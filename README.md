@@ -14,4 +14,4 @@ You need to identify the zones first. To identify zones,
 Run `python3.6 sample_osc_server.py`.
 
 #### 3. Run the Real Time Person Detection
-1. Open another terminal and run `./test.sh`
+Open another terminal and run `./test.sh`
