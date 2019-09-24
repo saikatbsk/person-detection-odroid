@@ -16,6 +16,8 @@ from pythonosc import udp_client
 
 from get_polygons import get_polygons
 
+CANVAS_SIZE = (337, 600)
+
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-p", "--prototxt", required=True,
@@ -49,8 +51,13 @@ net = cv2.dnn.readNetFromCaffe(args["prototxt"], args["model"])
 # initialize the video stream, allow the cammera sensor to warmup,
 # and initialize the FPS counter
 print("[INFO] starting video stream...")
-vs = VideoStream(src=0).start()
+vs = VideoStream(src=0, resolution=CANVAS_SIZE).start()
 # vs = VideoStream(usePiCamera=True).start()
+
+cv2.namedWindow("Frame", flags=cv2.WINDOW_AUTOSIZE)
+cv2.imshow("Frame", np.zeros(CANVAS_SIZE, np.uint8))
+cv2.waitKey(1)
+
 time.sleep(2.0)
 fps = FPS().start()
 
@@ -60,12 +67,12 @@ client = udp_client.SimpleUDPClient(args['ip'], args['port'])
 # loop over the frames from the video stream
 while True:
     # grab the frame from the threaded video stream and resize it
-    # to have a maximum width of 800 pixels
     frame = vs.read()
-    frame = imutils.resize(frame, width=600)
+    frame = imutils.resize(frame, width=CANVAS_SIZE[1])
 
     # grab the frame dimensions and convert it to a blob
     (h, w) = frame.shape[:2]
+    # print(h, w)
     blob = cv2.dnn.blobFromImage(cv2.resize(frame, (300, 300)),
         0.007843, (300, 300), 127.5)
 
