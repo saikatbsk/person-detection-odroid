@@ -8,7 +8,7 @@ import imutils
 
 import argparse
 
-CANVAS_SIZE = (600, 800)
+CANVAS_SIZE = (337, 600)
 
 FINAL_LINE_COLOR = (255, 255, 255)
 WORKING_LINE_COLOR = (127, 127, 127)
@@ -56,6 +56,7 @@ class PolygonDrawer(object):
 
             canvas = vs.read()
             canvas = imutils.resize(canvas, width=CANVAS_SIZE[1])
+            (h, w) = canvas.shape[:2]
 
             if (len(self.points) > 0):
                 # Draw all the current polygon segments
@@ -69,7 +70,7 @@ class PolygonDrawer(object):
                 self.done = True
 
         # User finised entering the polygon points, so let's make the final drawing
-        canvas = np.zeros(CANVAS_SIZE, np.uint8)
+        canvas = np.zeros((h, w), np.uint8)
         # of a filled polygon
         if (len(self.points) > 0):
             cv2.fillPoly(canvas, np.array([self.points]), FINAL_LINE_COLOR)
@@ -102,4 +103,3 @@ if __name__ == "__main__":
     with open(os.path.join(save_dir, filename + '.txt'), 'w') as f:
         for point in pd.points:
             f.write(','.join([str(p) for p in point]) + '\n')
-

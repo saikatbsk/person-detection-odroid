@@ -62,7 +62,7 @@ while True:
     # grab the frame from the threaded video stream and resize it
     # to have a maximum width of 800 pixels
     frame = vs.read()
-    frame = imutils.resize(frame, width=800)
+    frame = imutils.resize(frame, width=600)
 
     # grab the frame dimensions and convert it to a blob
     (h, w) = frame.shape[:2]
@@ -122,11 +122,12 @@ while True:
             if Polygon(zones[key]).intersects(Polygon(bbox_person)):
                 person_count_in_zone = person_count_in_zone + 1
         print('Person count in zone: {} = {}'.format(key, person_count_in_zone))
-        # Add this count is a dictionary
-        zone_counts[key] = person_count_in_zone
+        client.send_message("/"+key, person_count_in_zone)
+        # # Add this count is a dictionary
+        # zone_counts[key] = person_count_in_zone
 
-    # Send the counts via osc
-    client.send_message("/count", json.dumps(zone_counts))
+    # # Send the counts via osc
+    # client.send_message("/count", json.dumps(zone_counts))
 
     # put the number of detected persons in the frame
     cv2.putText(
@@ -152,4 +153,3 @@ print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
 # do a bit of cleanup
 cv2.destroyAllWindows()
 vs.stop()
-
