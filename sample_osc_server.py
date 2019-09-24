@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
   dispatcher = dispatcher.Dispatcher()
   for zone in zones:
-      dispatcher.map("/"+zone, print)
+      dispatcher.map("/trigger/"+zone, print)
 
   server = osc_server.ThreadingOSCUDPServer(
       (args.ip, args.port), dispatcher)

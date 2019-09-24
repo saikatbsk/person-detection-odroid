@@ -129,7 +129,7 @@ while True:
             if Polygon(zones[key]).intersects(Polygon(bbox_person)):
                 person_count_in_zone = person_count_in_zone + 1
         print('Person count in zone: {} = {}'.format(key, person_count_in_zone))
-        client.send_message("/"+key, person_count_in_zone)
+        client.send_message("/trigger/"+key, person_count_in_zone)
         # # Add this count is a dictionary
         # zone_counts[key] = person_count_in_zone
 
